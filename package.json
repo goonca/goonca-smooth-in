@@ -1,0 +1,19 @@
+{
+  "name": "goonca-smooth-in",
+  "version": "1.0.0",
+  "description": "Smooth in containers when scrolling",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goonca/goonca-smooth-in.git"
+  },
+  "author": "Samuel Goncalves",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goonca/goonca-smooth-in/issues"
+  },
+  "homepage": "https://github.com/goonca/goonca-smooth-in#readme"
+}
