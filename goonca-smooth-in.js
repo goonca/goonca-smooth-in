@@ -1,6 +1,6 @@
 function GooncaSmoothIn() {
 
-  const DISTANCE = 150;
+  const DISTANCE = 75;
   const IS_TWO_WAYS = true;
 
   const offset = el => {
@@ -17,12 +17,18 @@ function GooncaSmoothIn() {
     cur.setAttribute('go-top', offset(cur).top);
     cur.setAttribute('go-direction', (cur.getAttribute('go-smooth-in') || 'left'));
     cur.setAttribute('go-init-left', parseInt(cur.style.left) || 0);
+    cur.setAttribute('go-init-top', parseInt(cur.style.top) || 0);
 
     //TODO control absolute
     cur.style.position = 'relative';
     cur.style.opacity = '0';
     //TODO + from the current left/right
-    cur.style.left = `${cur.getAttribute('go-direction') == 'left' ? '-' : ''}${DISTANCE}px`;
+    const directionAttr = cur.getAttribute('go-direction');
+    if('leftright'.includes(directionAttr)) {
+      cur.style.left = `${directionAttr == 'left' ? '-' : ''}${DISTANCE}px`;
+    } else if(directionAttr == 'up') {
+      cur.style.top = `${DISTANCE}px`;
+    }
 
   });
 
@@ -30,8 +36,15 @@ function GooncaSmoothIn() {
 
     this.containers.forEach((cur, i) => {
 
-      if(parseInt(cur.getAttribute('go-init-left')) == parseInt(cur.style.left) && !IS_TWO_WAYS)
-        return;
+      const directionAttr = cur.getAttribute('go-direction');
+
+      if('leftright'.includes(directionAttr)) {
+        if(parseInt(cur.getAttribute('go-init-left')) == parseInt(cur.style.left) && !IS_TWO_WAYS)
+          return;
+      } else if(directionAttr == 'up') {
+        if(parseInt(cur.getAttribute('go-init-top')) == parseInt(cur.style.top) && !IS_TWO_WAYS)
+          return;
+      }
 
       const grossCurse = Math.min(
         Math.max(0, Math.round(window.innerHeight + document.documentElement.scrollTop) - Math.round(offset(cur).top)),
@@ -40,8 +53,12 @@ function GooncaSmoothIn() {
 
       const netCourse = Math.round(grossCurse * DISTANCE / (cur.offsetHeight / 2));
 
-      let left = (DISTANCE - netCourse) * (cur.getAttribute('go-direction') == 'right' ? 1 : -1);
-      cur.style.left = `${left}px`;
+      let move = (DISTANCE - netCourse) * (directionAttr == 'right' || cur.getAttribute('go-direction') == 'up' ? 1 : -1);
+      if('leftright'.includes(directionAttr)) {
+        cur.style.left = `${move}px`;
+      } else {
+        cur.style.top = `${move}px`;
+      }
       cur.style.opacity = `${netCourse / DISTANCE}`;
     });
   }
